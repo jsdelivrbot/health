@@ -1,0 +1,344 @@
+<template>
+  <div class="index">
+      <div class="top"><i class="el-icon-arrow-left" @click="back_to"></i><span>添加就诊卡</span></div>
+      <div>
+          <div>
+              <div>
+                  <div>选择医院</div><div id="hospital" @click="showlist">{{info.hospitalName}}</div><div></div>
+              </div>
+              <div>
+                <div class="text_right"><span>就诊人</span><span>{{info.username}}</span></div>
+                <div class="text_right"><span>身份证号码</span><span>{{info.card}}</span></div>
+                <div class="text_right" style="border-bottom:1px solid #ccc"><span>就诊卡号</span><span><input type="text" placeholder="请输入就诊卡号" maxlength="32" v-model="info.number"> </span></div>
+                <!-- <mt-field class="file" label="就诊人" placeholder="请输入就诊人" v-model="info.username" disabled></mt-field>
+                <mt-field class="file" label="身份证号码" placeholder="请输入身份证号码" type="number" v-model="info.card" disabled></mt-field>
+                <mt-field class="file" label="就诊卡号" placeholder="请输入就诊卡号" type="number" v-model="info.number"></mt-field> -->
+              </div>
+          </div>
+      </div>
+      <div v-show="chooseHosital">
+        <ul>
+            <li v-for="list in lists" @click="hospi(list.hospitalId,list.hospitalName)">{{list.hospitalName ==''?info.hospitalName:list.hospitalName}}</li>
+        </ul>
+      </div>
+      <div class="bgTm" v-show="chooseHosital" @click="closebg"></div>
+      <div>
+        <mt-button type="primary" size="large" @click="submit" style="background-color:rgb(78,118,179)">{{info.subText}}</mt-button>
+      </div>
+  </div>
+</template>
+<style lang='less' scoped>
+    .index{
+        width: 100%;
+        height: 100%;
+        & > div:nth-child(2){
+            width:100%;
+            height: calc(~"100% - 10rem");
+            background-color:rgb(241, 241, 241);
+            overflow: scroll;
+            & > div{
+                width: 100%;
+                height:20rem;
+                margin: 0 auto;
+                background-color: white;
+                box-sizing: border-box;
+                box-shadow: 2px 3px 10px 1px #a8a8a8;
+                & >div:first-child{     /* 选择医院的大div */
+                    width: 100%;
+                    height: 4rem;
+                    position: relative;
+                    box-sizing: border-box;
+                    & > div:first-child{        
+                        width: 25%;
+                        height: 4rem;
+                        line-height: 4rem;
+                        display: inline-block;
+                        font-size: 16px;
+                        text-align: right;
+                        vertical-align: top;
+                    }
+                    & > div:nth-child(2){
+                        width: 75%;
+                        height: 4rem;
+                        line-height: 4rem;
+                        display: inline-block;
+                        font-size: 14px;
+                        box-sizing: border-box;
+                        padding-left:1.5rem;
+                    }
+                    & > div:nth-child(3) {
+                        display: inline-block;
+                        width: 1.2rem;
+                        height: 2rem;
+                        background: url("../../static/bg_right.png") no-repeat;
+                        -webkit-background-size: cover;
+                        background-size: cover;
+                        position: absolute;
+                        top: 1.2rem;
+                        right: 1rem;
+                    }
+                   
+                }
+                & >div:nth-child(2){
+                    width: 100%;
+                    height: 16rem;
+                    background-color: white;
+                    .file{
+                        width: 100%;
+                        height:5rem !important;
+                        vertical-align: bottom;
+                        border: 1px solid white;
+                        .mint-cell-wrapper{
+                            padding: 0 !important;
+
+                        }
+                    }
+                }
+            }
+        }
+        & > div:nth-child(3){
+            width: 100%;
+            height: 30rem;
+            position: absolute;
+            top: 8.1rem;
+            left: 0;
+            z-index: 10000;
+            overflow-y: scroll;
+            & > ul{
+                list-style: none;
+                width:100%;
+                margin: 0 auto;
+                background-color: white;
+                z-index: 1000;
+                & > li{
+                    width: 100%;
+                    box-sizing: border-box;
+                    height: 4rem;
+                    line-height: 4rem;
+                    font-size: 14px;
+                    border-bottom: 1px solid #ccc;
+                    padding-left: 3.5rem;
+                }
+            }
+        }
+        & > div:last-child{             /* 提交按钮 */
+            width: 100%;
+            height: 6rem;
+            box-sizing: border-box;
+            padding-top:1.5rem;
+            position: absolute;
+            left:0;
+            bottom:0;
+            & > button{
+                border-radius: 0.4rem;
+                width:90%;
+                margin: 0 auto;
+            }
+        } 
+    }
+    .text_right{
+        width: 100%;
+        height: 4rem;
+        box-sizing: border-box;
+        border-top: 1px solid #ccc;
+        &>span:first-child{
+            width: 25%;
+            height: 4rem;
+            line-height: 4rem;
+            display: inline-block;
+            font-size: 16px;
+            text-align: right;
+            vertical-align: top;
+        }
+        & >span:last-child{
+            width: 75%;
+            height: 4rem;
+            line-height: 4rem;
+            display: inline-block;
+            font-size: 14px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-left: 1.5rem;
+        }
+    }
+    .bgTm {
+        width: 100%;
+        height: calc(~ "100% - 8rem");
+        background: #000;
+        opacity: 0.5;
+        position: absolute;
+        top: 8rem;
+        left: 0;
+    }
+    .top {
+    width: 100%;
+    height: 4rem;
+    line-height: 4rem;
+    font-size: 17px;
+    text-align: center;
+    border-bottom: 0.1rem solid #e7e7e7;
+    color: #444444;
+    background-color: #fff;
+    & > i {
+        position: absolute;
+        left: 1.2rem;
+        top: 1rem;
+        font-size: 24px;
+    }
+    & > img {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.4rem;
+    }
+    }
+</style>
+<script>
+import { Toast, Indicator, MessageBox ,Button ,Field ,Picker } from "mint-ui";
+import MobileSelect from 'mobile-select'
+import { setTimeout } from 'timers';
+export default {
+  components: {
+    Button,
+    Field ,
+    Picker
+  },
+  data(){
+      return{
+          chooseHosital: false,
+          lists:{},
+          info:{
+            username:"",
+            number: '',
+            card: "",
+            hospitalId: "",
+            hospitalName:"",
+            subText:"",
+          },
+          url_s:  this.$store.state.skyUrl,     /* 四凯测试 */
+          Isclick:"",     //是否可以点击
+      }
+  },
+  created(){
+      this.query();
+      this.choose();
+  },
+  methods:{
+      /* 请求就诊人数据 */
+      query(){    
+          console.log('route',this.$route.query)      
+         //获取从检查预约单页面过来的状态
+        if(this.$route.query.Isclick == undefined){
+            this.Isclick = false
+            this.info.subText = "绑定";
+        }else{
+            this.Isclick = true;
+            this.info.subText = "绑定并预约"
+        }
+        //从检查预约单页面过来给该就诊人赋值
+        this.info.hospitalName = this.$route.query.hospitalName;
+        this.info.hospitalId = this.$route.query.hospitalId;
+        //从检查预约单页面过来给该就诊人赋值
+        this.axios.get( this.url_s+'/MedicalCard/patient',{
+            params:{
+                patientId:this.$route.query.patientId
+            }
+        }).then(res=>{
+            console.log("jiuzhenre",res)
+            this.info.username = res.data.patientName;
+            this.info.card = res.data.patientIdNumber;
+        })
+      },
+      /* 获取医院的数据 */
+      choose(){             
+          this.axios.get( this.url_s+'/MedicalCard/addMedicalCard')
+            .then(res=>{
+              this.lists = res.data;
+          })
+      },
+      showlist(){               /* 点击显示医院选择列表 */
+          this.chooseHosital = true;
+          Indicator.open('加载中..')
+      },
+      closebg(){    /* 点击隐藏列表 */
+          this.chooseHosital = false;
+      },
+       /* 点击隐藏列表 */
+      hospi(hospitalId,hospitalName){           
+          this.info.hospitalId = hospitalId;
+          this.info.hospitalName = hospitalName;
+          this.chooseHosital = false;
+      },
+      //点击提交====
+      submit(info){
+         let userId = ""
+         if(this.$route.query.userId == undefined ||this.$route.query.userId ==null){
+            userId = localStorage.getItem("userid")
+         }else{
+            userId = this.$route.query.userId
+         }
+          Indicator.open('提交中..')
+          this.axios.get( this.url_s+'/MedicalCard/saveMedicalCard',{
+              params:{
+                  userId: userId,
+                  patientId: this.$route.query.patientId,
+                  hospitalId: this.info.hospitalId,
+                  name: this.info.username,
+                  idCard: this.info.card,
+                  medicalCard: this.info.number
+              }
+          }).then(res=>{
+              if(res.data == true){
+                Indicator.close();
+                Toast({message:'绑定成功',duration:500})
+                setTimeout(()=>{
+                    if(this.Isclick == true ){
+                        MessageBox.confirm("是否预约?").then(action => {
+                        this.axios
+                        .get(this.url_s+"/appointmentSearch/updateAppointment", {
+                            params: {
+                                yyid: localStorage.getItem("yyid")
+                            }
+                        })
+                        .then(res => {
+                            console.log("del", res);
+                            if (res.data == true) {
+                                Toast({message:'预约成功',duration:500})
+                                this.$router.push("./order/advisory")
+                                localStorage.removeItem("Isclick","hospitalId","hospitalName","yyid"); 
+                            } else {
+                                Toast("预约失败");
+                            }
+                            }).catch(err => {
+                                Toast("预约失败");
+                            });
+                        });
+                    }else{
+                        this.$router.push({name:"Visits_Card",query:{
+                            "patientId":this.$route.query.patientId
+                        }})
+                    }
+                },1000)
+              }else{
+                 Toast('绑定失败..') 
+              }
+          }).catch(err=>{
+              Indicator.close();
+              Toast('提交失败...')
+          })
+      },
+      //返回按钮
+      back_to(){
+        /* 返回时删除localStorage的缓存 */
+        //localStorage.removeItem();
+        if(this.Isclick == true ){
+            this.$router.push({name:"advisory",query:{"userId":this.$route.query.userId}})
+        }else{
+            this.$router.push({name:"Visits_Card",query:{
+                "patientId": this.$route.query.patientId
+            }});
+        }
+      },
+  }
+}
+</script>
+

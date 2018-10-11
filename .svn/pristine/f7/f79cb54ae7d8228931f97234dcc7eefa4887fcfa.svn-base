@@ -1,0 +1,248 @@
+<template>
+  <div class='index' :style="{'background:none':nofocus}">
+        <div class="content">
+          <div>
+            <div class="lunbo" v-if="nofocus">
+              <div>
+                <div class="search" v-if="nofocus">
+                    <div>
+                        <div></div>
+                        <input type="text" placeholder="请输入医生名字" @change="docPai"  @focus="focu">
+                    </div>
+                    <div ><div @click="notice"></div><div class="notice" v-if="info.shownums">{{info.notice}}</div></div>
+                    <div><div @click="userKnow"></div>
+                  </div>      <!-- 用户须知 -->
+                </div>
+              </div>
+              <mt-swipe :auto="4000">
+                <mt-swipe-item><img src="../../assets/lunbo/timg (3).jpg"></mt-swipe-item>
+                <mt-swipe-item><img src="../../assets/lunbo/timg (1).jpg"/></mt-swipe-item>
+                <mt-swipe-item><img src="../../assets/lunbo/timg (2).jpg"/></mt-swipe-item>
+              </mt-swipe>
+            </div>
+          </div>
+            <div class="menzheng" v-if="nofocus">
+                <div @click="menzhen"><img src="../../assets/index_middle_MZ.png" alt=""><span>网络咨询</span></div>
+                <div @click="yizhen"><img src="../../assets/index_middle_YZ.png" alt=""><span>免费义诊</span></div>
+            </div>
+            <div class="querylist" v-if="nofocus">
+              <div></div>
+              <div @click="consultancy"><img src="../../assets/index_second_Right.png" alt=""><span>咨询订单</span></div>
+            </div>
+            <div class="perscript" v-if="nofocus">
+                <div @click="chufang">
+                  <div>我的处方</div>
+                  <div><img src="../../assets/order/index_cf.png"/><span>查询、药品支付及配送</span></div>
+                </div>
+                <div @click="jianchalist">
+                  <div>检验检查预约单</div>
+                  <div><img src="../../assets/order/index_jc.png"/><span>检验检查单查询及预约</span></div>
+                </div>
+            </div>
+        </div>
+          <div class="changebottom" v-if="nofocus">
+              <div @click="visitMange">
+                  <img src="../../assets/index_bottom_gl1.png" alt="">
+                  <span>就诊人管理</span>
+              </div>
+              <div></div>
+              <div @click="Myconcern">
+                  <img src="../../assets/index_bottom_gz2.png" alt="">
+                  <span>我的关注</span>
+              </div>
+          </div>
+          <div class="moto" v-if="mustKnow">
+              <div>
+                  <span @click="close_mt"><i class="el-icon-close"></i></span>
+                  <div><h2>用户须知</h2></div>
+                  <ul>
+                      <li>线上问诊后医生可能会开具本医院的检查检验单或电子处方单。</li>
+                      <li>用户需要绑定就诊卡并确认成功后，即可到医院缴费再进行检查。</li>
+                      <li>医生开具的电子处方，用户需要在处方有效期内完成线上支付并选择配送方式</li>
+                      <li>用户绑定后可通过“医院报告”功能查看医院检查检验的电子报告</li>
+                      <li>用户可通过“就诊人管理”添加问诊人或预约挂号的就诊人，以及绑定医院的就诊卡</li>
+                  </ul>
+              </div>
+          </div>
+  </div>
+</template>
+<style lang="less" scoped>
+@import "../../css/net_index.less";
+
+</style>
+<script>
+import { Toast, Indicator, Swipe , SwipeItem} from "mint-ui";
+export default {
+  components:{
+    Swipe,
+    SwipeItem
+  },
+  data() {
+    return {
+      //let vm = new Vue()
+      nofocus: true,
+      info: {
+        doctorName: "", //医生名字
+        notice: "",
+        shownums: false,
+      },
+      mustKnow: false, /* 用户须知弹框显示 */
+      url_s:  this.$store.state.skyUrl,     /* 四凯测试 */
+    };
+  },
+  created() {
+    this.checkRole(); //获取用户是否注册
+    this.noticNums();
+  },
+  mounted(){
+    this.yyClick();
+
+  },
+  methods: {
+   checkRole() {
+      //获取用户是否注册
+      let _this = this;
+      console.log('openId',_this.$route.query)
+//     if(localStorage.getItem('openId') == null || localStorage.getItem('openId')== "" || localStorage.getItem('openId')=="undefined" || localStorage.getItem('openId') == "null") {
+//       localStorage.setItem("openId", _this.$route.query.openId)
+//     }
+     if(_this.$route.query.openId != undefined){
+       localStorage.setItem("openId", _this.$route.query.openId)
+     }
+     if(_this.$route.query.hospitalId != undefined){
+       localStorage.setItem("hospitalId", _this.$route.query.hospitalId)
+     }
+      _this.axios
+        .get(
+          _this.url_s+"/messageService/isZhuce",{
+            params:{
+              openId:  localStorage.getItem('openId') //_this.$route.query.openId
+            }
+          }
+        )
+        .then(function(res) {
+          console.log("resfsfds", res);
+          if(res.data.userName == res.data.openId){
+            _this.$router.push("./");
+          }
+          if (res.data.complete == 'false') {
+            _this.$router.push("./");
+          }else{
+            localStorage.setItem("userid",res.data.id);
+          }
+        });
+    },
+
+    //获取消息条数
+    noticNums(){
+      let _this = this;
+      _this.axios
+        .get(
+          this.url_s+"/Notice/findTotalCount",{
+            params:{
+              userId:localStorage.getItem("userid")
+            }
+          }
+        )
+        .then(function(res) {
+          console.log("ressss", res);
+          _this.info.notice = parseFloat(res.data);
+          if(_this.info.notice == 0){
+            _this.info.shownums = false;
+          }
+        });
+    },
+    focu(){
+      this.$router.push("./search")
+     /*  this.nofocus = false;
+      this.$nextTick(() => {
+        this.$refs.search.DetailOne("12");
+      }) */
+    },
+    docPai() {
+      if (this.info.doctorName !== "") {
+       this.$router.push("./search")
+      } else {
+       this.$router.push("./search")
+      }
+    },
+    menzhen() {
+      let _this = this;
+      console.log("_this", localStorage);
+      localStorage.setItem("kindsmenzhen", "menzhen");
+      //Hub.$emit('change','menzhen');
+      _this.$router.push("./Menzhen");
+    },
+    yizhen() {
+      let _this = this;
+      localStorage.setItem("kindsmenzhen", "yizhen");
+      _this.$router.push("./Menzhen");
+    },
+    chufang(){      //我的处方
+      this.$router.push({path:"./perscript/prescription",query:{hospitalId:this.$route.query.hospitalId}});
+    },
+    jianchalist(){
+      this.$router.push("./order/advisory")
+    },
+    consultancy() {
+      /* 咨询订单 */
+      let _this = this;
+      _this.$router.push({path:"./consultancy",query:{hospitalId:_this.$route.query.hospitalId}});
+    },
+    visitMange() {
+      /* 跳转到就诊人管理页面 */
+      let _this = this;
+      _this.$router.push("./visitMange");
+    },
+    Myconcern() {
+      let _this = this;
+      _this.$router.push("./Myconcern");
+    },
+    userKnow() {
+      /* 用户须知 */
+      let _this = this;
+      _this.mustKnow = true;
+    },
+    notice() {
+      /* 消息通知 */
+      let data='yourname'
+      this.$router.push({name:'notice',params:this.info})
+    },
+    close_mt() {
+      let _this = this;
+      this.mustKnow = false;
+    },
+    yyClick() {
+      let _this = this;
+      var _url = location.href;
+      if (location.hash.length) {
+        _url = _url.substr(0, _url.indexOf(location.hash));
+      }
+      _this.info.url = _url;
+      this.axios.get(
+          this.$store.state.weChatUrl + "/weixinFHW/consultation/openWxJs",
+          {
+            params: {
+              url: _url
+            }
+          }
+        )
+        .then(function(response) {
+          wx.config({
+            debug: false, //调试阶段建议开启
+            appId: response.data.appid, //APPID
+            timestamp: response.data.timestamp, //上面main方法中拿到的时间戳timestamp
+            nonceStr: response.data.noncestr, //上面main方法中拿到的随机数nonceStr
+            signature: response.data.signature, //上面main方法中拿到的签名signature
+            jsApiList: [
+              //所有要调用的 API 都要加到这个列表中
+              "chooseImage", //从本地的相册、图库选择图片
+              "uploadImage",
+              "chooseWXPay"
+            ]
+          });
+        });
+    }
+  }
+};
+</script>

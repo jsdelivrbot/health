@@ -1,0 +1,429 @@
+<template>
+   <div class="Visits_Card">
+   <div class="top"><i class="el-icon-arrow-left" @click="back_to"></i><span>就诊卡</span>
+        <img @click="del()" src="../../assets/card/Visits_Card-rightTop.png"v-if></div>
+      <div class="Visits_Card-background">
+         <div class="Card">
+            <ul>
+               <li v-for="list in lists" > 
+                  <div>
+                      <span @click="yuyue(list.medicalCardId)">
+                        <img src="../../assets/card/Visits_Card-title.png">
+                      </span>
+                      <span @click="yuyue(list.medicalCardId)">{{list.hospitalName}}</span>
+                      <span v-if="Nodel==false">
+                          <input type="checkbox" name='card' v-bind:value="list.medicalCardId">
+                      </span>
+                  </div>
+                  <div @click="yuyue(list.medicalCardId)">{{list.cardNo}}
+                  </div>
+                  <div @click="yuyue(list.medicalCardId)">
+                      <span>{{list.patientName}}</span>
+                      <span>{{list.identity}}</span>
+                  </div>
+               </li>
+               <li id="nodata" v-if="nodata"><img src="../../assets/noDate.png" alt=""></li>
+               <li id="li" @click="checkDivScroolTop" v-show="updatamore">
+                  <span></span><span>加载更多</span>
+               </li>
+              <li class="Visits_Card-bottom">
+                  <div v-if="Nodel" @click="add_card">
+                    <img src="../../assets/card/Visits_Card-add.png">
+                    <span>添加就诊卡</span>
+                  </div>
+                  <div v-else @click="delCard()">
+                    <img src="../../assets/card/Visits_Card-del.png">
+                    <span>删除就诊卡</span>
+                  </div>
+              </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</template>
+
+
+<style scoped lang="less" scoped>
+input[type="checkbox"] {
+  width: 4rem;
+  height: 4rem;
+  -webkit-appearance: none; /*清除复选框默认样式*/
+  background: url("../../assets/card/Visits_Card-nocheck.png") no-repeat; /*复选框的背景图，就是上图*/
+  background-size: cover;
+  vertical-align: middle;
+}
+input[type="checkbox"]:checked {
+  -webkit-appearance: none; /*清除复选框默认样式*/
+  background: url("../../assets/card/Visits_Card-check.png") no-repeat; /*复选框的背景图，就是上图*/
+  background-size: cover;
+  height: 4rem; /*高度*/
+  vertical-align: middle;
+  width: 4rem;
+}
+#nodata{
+  text-align: center;
+  background:none!important;
+  width:100% !important;
+  height: 4rem!important;
+  color: #444444;
+  font-size: 16px;
+  margin: 20% 0 10% 0;
+  & > img{
+    width: 12rem;
+  }
+}
+.Visits_Card {
+  width: 100%;
+  height: 100%;
+}
+.Visits_Card-background {
+  background-color: #fff;
+  width: 100%;
+  height: calc(~"100% - 4rem");
+  overflow-y: scroll;
+}
+ @fontSize_14: 14px;
+ @fontSize_12: 12px;
+#li {
+    width: 100%;
+    height: 6rem;
+    background-image: none;
+    & > span {
+        display: inline-block;
+        height: 6rem;
+        width: 20%;
+        line-height: 6rem;
+        text-align: center;
+        vertical-align: top;
+        font-size: @fontSize_14;
+    }
+    & > span:nth-child(1) {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-top: 2.25rem;
+        background: url("../../assets/xiala.png") no-repeat;
+        -webkit-background-size: cover;
+        background-size: cover;
+        margin-left: 40%;
+    }
+    & > span:nth-child(2) {
+        color: #8f8f8f;
+        letter-spacing: 0.1rem;
+    }
+}
+.top {
+  width: 100%;
+  height: 4rem;
+  line-height: 4rem;
+  font-size: 17px;
+  text-align: center;
+  border-bottom: 0.1rem solid #e7e7e7;
+  color: #444444;
+  background-color: #fff;
+  & > i {
+    position: absolute;
+    left: 1.2rem;
+    top: 1rem;
+    font-size: 24px;
+  }
+  & > img {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+  }
+}
+
+.Card {
+  width: 100%;
+  height: calc(~"100% - 4rem");
+  box-sizing: border-box;
+  & > ul {
+    margin-bottom: 15%;
+    margin-top: 5%;
+    width: 100%;
+    & > li {
+      list-style: none;
+      margin: 0 auto;
+      width: 90%;
+      height: 14rem;
+      background-image: url(../../assets/card/Visits_Card-IcBG.png);
+      background-size: 100% 100%;
+      margin-bottom: 5%;
+      & > div:nth-child(1) {
+        width: 91%;
+        margin-left: 6%;
+        height: 5rem;
+        font-size: 0;
+        line-height: 5rem;
+        & > span:first-child {
+          width: 15%;
+          height: 100%;
+          display: inline-block;
+          position: relative;
+          box-sizing: border-box;
+          & > img {
+            position: absolute;
+            top: 11px;
+            left: 0px;
+          }
+        }
+        & > span:nth-child(2) {
+          width: 60%;
+          font-size: 1.5rem;
+          line-height: 5rem;
+          vertical-align: top;
+          display: inline-block;
+          box-sizing: border-box;
+          color: #fff;
+        }
+        & > span:nth-child(3) {
+          width: 20%;
+          display: inline-block;
+          line-height: 5rem;
+          vertical-align: top;
+          text-align: right;
+          box-sizing: border-box;
+        }
+      }
+      & > div:nth-child(2) {
+        text-align: center;
+        font-size: 1.6rem;
+        color: #fff;
+        text-shadow: 0 0 0.25px #606060;
+        margin-top: 2%;
+      }
+      & > div:nth-child(3) {
+        height: 5rem;
+        width: 90%;
+        margin-left: 6%;
+        & > span:nth-child(1) {
+          float: left;
+          line-height: 5.5rem;
+          height: 3rem;
+          width: 100%;
+          color: #fff;
+          font-size: 1.2rem;
+        }
+        & > span:nth-child(2) {
+          float: left;
+          line-height: 2.5rem;
+          height: 2rem;
+          color: #fff;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
+.Visits_Card-bottom {
+  background:none!important;
+  text-align: center;
+  width: 100%;
+  height: 4rem;
+  color: #444444!important;
+  line-height: 4rem;
+  vertical-align: top;
+  & > div {
+    margin-top: 2%;
+    img{
+    }
+    & > span {
+      width:38%!important;
+      color: #444444!important;
+      font-size: 16px;
+      line-height: 2.2!important;
+    }
+  }
+}
+</style>
+<script>
+import { Toast, Indicator, MessageBox } from "mint-ui";
+import $ from "jquery";
+export default {
+  data() {
+    return {
+      lists: {},
+      Nodel: true,
+      value: "",
+      url_s:  this.$store.state.skyUrl,     /* 四凯测试 */
+      page: "",
+      updatamore: false,
+      Isclick:"",     //是否可以点击
+      nodata: "",
+    };
+  },
+
+  created() {
+    this.query();
+  },
+  methods: {
+    query() {
+      /* 获取数据 */
+      //获取从检查预约单页面过来的状态
+      localStorage.removeItem("medicalCardId")
+      if(this.$route.query.Isclick == undefined){
+        this.Isclick = false
+      }else{
+        this.Isclick = true
+      }
+      let hospitalId = ""
+      if(this.$route.query.hospitalId ==undefined){
+        hospitalId = localStorage.getItem("hospitalId")
+      }else{
+        hospitalId = this.$route.query.hospitalId
+      }
+      console.log('route',this.$route.query)
+      this.lists = {};
+      Indicator.open("加载中...");
+      this.page = 1;
+      this.axios
+        .get( this.url_s+"/MedicalCard/findMedicalCardList", {
+          params: {
+            patientId: this.$route.query.patientId,
+            page: this.page,
+            hospitalId: hospitalId
+          }
+        })
+        .then(res => {
+          Indicator.close();
+          console.log('res',res)
+          if (res.data != "no") {
+            this.lists = res.data;
+            this.updatamore = true;
+          } else {
+            this.nodata = true;
+          }
+        })
+        .catch(err => {
+          Indicator.close()
+          Toast(err);
+        });
+    },
+    checkDivScroolTop(){
+          //获取节点
+      Indicator.open('加载中...')
+      let hospitalId = ""
+      if(this.$route.query.hospitalId ==undefined){
+        hospitalId = localStorage.getItem("hospitalId")
+      }else{
+        hospitalId = this.$route.query.hospitalId
+      }
+      let _this = this;
+      _this.page++;
+      _this.axios       //this.info.url_s + "/api/doctor/findList"
+          .get( _this.url_s+"/MedicalCard/findMedicalCardList", {
+          params: {
+              patientId: _this.$route.query.patientId,
+              page: _this.page,
+              hospitalId: hospitalId
+          }
+          })
+          .then(function(res) {
+              Indicator.close();
+              console.log(res)
+              if(res.data != 'no'){
+                  _this.lists = _this.lists.concat(res.data);
+              }else{
+                  Toast("没有更多就诊卡..")
+              }
+          }).catch(err=>{
+              Indicator.close();
+              Toast('加载失败..')
+          })
+    },
+
+    /* 从不同页面过来返回不同界面 */
+    back_to() {       
+      if(this.Isclick == true ){
+        this.$router.push({name:"advisory",query:{"userId":this.$route.query.userId}})
+      }else{
+        this.$router.push("./add_visit");
+      }
+    },
+    /* 点击预约 */
+    yuyue(cardId){ 
+      console.log(cardId)   
+      if(this.Isclick == true){
+        MessageBox.confirm("是否预约?").then(action => {
+          this.axios
+          .get(this.url_s+"/appointmentSearch/updateAppointment", {
+            params: {
+              yyid: this.$route.query.yyid,
+              cardId:cardId
+            }
+          })
+          .then(res => {
+            console.log("del", res);
+            　　if(res.data == true) {
+                Toast({message:'预约成功',duration:500})
+                this.$router.push({name:"advisory",query:{"userId":this.$route.query.userId}})
+              } else {
+                  Toast("预约失败");
+              }
+          }).catch(err => {
+            Toast(err);
+          });
+        });
+      }
+    },
+    del() {
+      /* 点击显示删除按钮 */
+      if (this.Nodel == true) {
+        this.Nodel = false;
+      } else {
+        this.Nodel = true;
+      }
+    },
+    add_card(){     /* 新增就诊卡 */
+      if(this.Isclick == true ){
+        this.$router.push({name:'add_card',query:{
+          "Isclick": true,
+          "patientId": this.$route.query.patientId,
+          "hospitalId": this.$route.query.hospitalId,
+          "hospitalName": this.$route.query.hospitalName,
+          "yyid": this.$route.query.yyid
+        }})
+      }else{
+        this.$router.push({name:'add_card',query:{
+          "patientId": this.$route.query.patientId
+        }})
+      }
+    },
+      /* 删除就诊卡 */
+    delCard() {
+      let medicalCardId = "";
+      $.each($("input:checkbox"), function() {
+        if (this.checked) {
+          medicalCardId += $(this).val() + ",";
+        }
+      });
+      if(medicalCardId == ''){
+         Toast('请选择要删除的就诊卡...')
+         return 
+      }
+      MessageBox.confirm("是否删除就诊卡?").then(action => {
+        this.axios
+          .get( this.url_s+"/MedicalCard//deleteMedicalCard", {
+            params: {
+              medicalCardId: medicalCardId
+            }
+          })
+          .then(res => {
+            console.log("del", res);
+            if (res.status) {
+              Toast("删除成功.");
+              this.query();
+              this.Nodel = true; 
+            } else {
+              Toast("删除失败...");
+            }
+          })
+          .catch(err => {
+            Toast("删除失败...");
+          });
+      });
+    }
+  }
+};
+</script>
+

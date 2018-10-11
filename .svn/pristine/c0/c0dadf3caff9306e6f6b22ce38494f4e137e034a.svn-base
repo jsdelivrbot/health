@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+    <title>健康四川服务</title>
+    <style>
+      .el-rate__icon {
+        font-size: 25px !important;
+      }
+      .el-upload--picture-card {
+        width: 10rem !important;
+        height: 10rem !important;
+      }
+      .el-upload--picture-card {
+        line-height: 10rem !important;
+      }
+      .el-upload-list--picture-card .el-upload-list__item-actions {
+        width: 10rem !important;
+        height: 10rem !important;
+        margin-top: 8px !important;
+      }
+      .el-upload-list--picture-card .el-upload-list__item-thumbnail {
+        width: 10rem !important;
+        height: 10rem !important;
+      }
+      .el-upload-list--picture-card .el-upload-list__item {
+        width: 10rem !important;
+        height: 10rem !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+     /* localStorage.setItem("openId", GetQueryString('openId'));
+      localStorage.setItem("token",GetQueryString('token'));*/
+      //获取url参数值
+      function GetQueryString(name)
+      {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+      };
+    </script>
+  </body>
+</html>

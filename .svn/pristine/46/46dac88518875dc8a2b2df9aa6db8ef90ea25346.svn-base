@@ -1,0 +1,426 @@
+<template>
+  <div class="addPeople"  ref="info">
+    <div>
+      <div class="top"><i class="el-icon-arrow-left" @click="back_to"></i><span>添加就诊人</span></div>
+      <div prop='patientName'>
+        <div>姓名</div>
+        <input type="text" placeholder="请输入就诊人姓名" v-model="info.patientName" style="height: 4.8rem;">
+      </div>
+
+      <div class="right" @click="show">
+        <div>性别</div>
+        <div>
+          <input
+            v-model="info.xingbie"
+            type="text"
+            placeholder="选择性别"
+            style="    width: 100%;
+                      height: 5rem;
+                      font-size: 14px;
+                      color: #000000;"
+            onfocus="this.blur()"
+          >
+          <!--<input type="text" placeholder="选择性别" :value="info.xingbie">-->
+        </div>
+
+        <!--<div v-text="info.xingbie"></div>-->
+        <div></div>
+      </div>
+      <div>
+        <div>身份证号</div>
+        <input type="text" placeholder="请输入就诊人身份证号" v-model="info.idcard" style="height: 4.8rem;" maxlength="18">
+      </div>
+      <div class="right" @click = "setDate">
+        <div>生日</div>
+        <div>
+          <input type="text" placeholder="选择日期"  v-model="data"  onfocus="this.blur()" style="font-size: 14px;">
+        </div>
+        <div></div>
+      </div>
+      <div class="right" >
+        <div>关系</div>
+        <div id="trigger5">{{info.relation}}</div>
+        <div></div>
+      </div>
+
+      <button class="baocun" @touchstart="save(info)" onclick="" style="cursor:pointer">保存</button>
+      <!--<input type="file" accept="image/*" multiple>-->
+    </div>
+
+    <div class="bgColor" v-if="info.bg"></div>
+    <div class="shangchuan" v-if="info.gender">
+      <div>
+        <p @click="nan">男</p>
+        <p @click="nv">女</p>
+      </div>
+      <div @click="unShow">
+        <p >取消</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="less" scoped>
+  .mohu{
+    background-image: linear-gradient(180deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6)),linear-gradient(0deg,hsla(0,0%,100%,.95),hsla(0,0%,100%,.6));
+  }
+  @fontSize_14: 14px;
+  @fontSize_12: 12px;
+  input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color: #b2b3b3;
+    font-family: ﻿MicrosoftYaHei;
+  }
+  input:-moz-placeholder, textarea:-moz-placeholder {
+    color: #b2b3b3;
+    font-family: ﻿MicrosoftYaHei;
+  }
+  input::-moz-placeholder, textarea::-moz-placeholder {
+    color: #b2b3b3;
+    font-family: ﻿MicrosoftYaHei;
+  }
+  input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+    color: #b2b3b3;
+    font-family: ﻿MicrosoftYaHei;
+  }
+  .right input {
+    border: none;
+    outline: none;
+    color: #b2b3b3;
+  }
+  
+  .addPeople {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    & > div {
+      .top{
+        width: 100%;
+        height: 4rem;
+        line-height: 4rem;
+        font-size: 18px;
+        text-align: center;
+        position: relative;
+        border-bottom: 0.1rem solid #e7e7e7;
+        color: rgb(162, 156, 156);
+        & > i{
+            position: absolute;
+            left: 1.2rem;
+            top: 1.2rem;
+            font-size: 24px;
+        }
+      }
+      & > div {
+        width: 100%;
+        height: 5rem;
+        background: #fff;
+        border-bottom: .1rem solid #eeeeee;
+        line-height: 5rem;
+        font-size: 0;
+        position: relative;
+        & > div:nth-child(1) {
+          width: 25%;
+          height: 5rem;
+          display: inline-block;
+          padding-left: 1rem;
+          font-size:   @fontSize_14;
+        }
+        & > input {
+          width: calc(~ '75% - 1rem');
+          height: 5rem;
+          font-size:   @fontSize_14;
+        }
+
+      }
+    }
+  }
+  .right {
+    & > div {
+      vertical-align: top;
+    }
+    & > div:nth-child(2) {
+      display: inline-block;
+      width: 60%;
+      height: 5rem;
+      text-align: left;
+      padding-right: 3rem;
+      font-size: @fontSize_14;
+    }
+    & > div:nth-child(3) {
+      display: inline-block;
+      width: 1.2rem;
+      height: 2rem;
+      background: url("../static/bg_right.png") no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      position: absolute;
+      top: 1.5rem;
+      right: 1rem;
+    }
+  }
+  .moren {
+    color: #26a6fc;
+    margin-top: 2rem;
+    & > div:nth-child(2) {
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      top: 1.5rem;
+      right: 1rem;
+      background: url("../static/gouyuan.png")no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      border-radius: 50%;
+    }
+  }
+  .baocun {
+    font-size: 1.7rem !important;
+    text-align: center;
+    line-height: 5rem;
+    background-color: #0598fc !important;
+    border-radius: 1rem;
+    width: 80% !important;
+    color: #ffffff;
+    letter-spacing: .2rem;
+    margin-top: 6rem;
+    border: none;
+    margin-left: 10%;
+  }
+  .bgColor {
+    width: 100% !important;
+    height: 100% !important;
+    background: #000 !important;
+    opacity:0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .shangchuan {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    & > div:first-child {
+      position: absolute;
+      width: 100%;
+      bottom: 12rem;
+      background: transparent;
+      border-bottom: transparent;
+      left: 0;
+      & > p {
+        margin-left: 10%;
+        width: 80%;
+        height: 5rem;
+        background: #fff;
+        border-bottom: .1rem solid #eeeeee;
+        text-align: center;
+        line-height: 5rem;
+        font-size: 1.7rem;
+      }
+      & > p:first-child {
+        border-radius: 1rem 1rem 0 0;
+      }
+      & > p:last-child {
+        border-radius: 0 0 1rem 1rem;
+      }
+    }
+    & > div:last-child {
+      position: absolute;
+      width: 100%;
+      bottom: 0rem;
+      background-color: transparent;
+      left: 0;
+      & > p {
+        width: 80%;
+        height: 5rem;
+        margin-left: 10%;
+        font-size: 1.7rem;
+        text-align: center;
+        line-height: 5rem;
+        background: #fff;
+        border-radius: 1rem;
+        color: #ff3b30;
+      }
+    }
+  }
+</style>
+<script>
+  import MobileSelect from 'mobile-select'
+  import { Toast,Indicator,Spinner,MessageBox } from 'mint-ui';
+  export default  {
+    data () {
+      return {
+        info: {
+          gender : false,
+          bg: false,
+          xingbie: '选择性别',
+          patientName: "",
+          relation:"",
+          idcard:'',
+        },
+        relations:"",
+        value1: "",
+        url: require("../static/gouyuan.png"),
+        urls: this.$store.state.skyUrl,
+        data:'',
+        data2:'',
+        Isbenren: "",
+        confirmation:"",
+        interrogationId:"",
+        relationArr:"",
+        canClick:true,
+      }
+    },
+    created(){
+      this.query();     //true显示本人，false不显示本人
+    },
+    mounted(){
+
+    },
+    methods: {
+      query(){      /* 查询本人能不能添加 */
+        console.log('query',this.$route.query)
+        if(this.$route.query.confirmation != undefined){
+          this.confirmation = true
+        }else{
+          this.confirmation = false
+        }
+        this.axios.get(this.urls+'/Patients/CheckPatient',{
+          params:{
+            userId: localStorage.getItem("userid")
+          }
+        }).then(res =>{
+          console.log('res',res)
+          var data = []
+          if(res.data == true){
+              data = ["本人","丈夫","妻子","母子","母女","父子","父女","亲属","朋友","其他"]
+            }else{
+              data = ["丈夫","妻子","母子","母女","父子","父女","亲属","朋友","其他"]
+          }
+          var mobileSelect5 = new MobileSelect({
+              trigger: "#trigger5",
+              title: "关系",
+              wheels: [
+                  {data: data}
+              ],
+              callback:function(indexArr, data){
+                  var relation =""
+                  data.map(_=>{
+                    relation += _
+                  })
+                  console.log('relation',relation)
+              }
+          });
+          this.relationArr = mobileSelect5
+        })
+      },
+      //添加就诊人
+      save (info) {
+        if(this.canClick != true){
+          return
+        }
+        this.canClick = false;
+        let relation = "";
+        this.relationArr.curValue.map(_=>{
+            relation = _
+        })
+        let _this = this;
+        if(_this.info.patientName == ""){
+           Toast("姓名不能为空")
+        }else if( _this.info.xingbie == ""){
+           Toast("性别必选项")
+        }else if(_this.info.idcard == ""){
+           Toast("身份证为必填")
+        }else if(_this.info.patientBirthday == ""){
+           Toast("生日为必填")
+        }else if( relation == ""){
+           Toast("关系为必填")
+        }else{
+        //params.append('token', localStorage.getItem('token'));       //你要传给后台的参数值 key/value
+        //params.append('patientBirthday',_this.data);    //http://www.schlwyy.com:8686/doctor/api/patients/save
+       /*  _this.$refs[info].validate((valid) => {
+          if (valid) { */
+            _this.axios.get( this.urls+'/Patients/savePatients',{
+              params:{
+                patientName: _this.info.patientName,
+                patientGender:_this.info.xingbie,
+                patientIdNumber:_this.info.idcard,
+                patientBirthday:_this.data,
+                relation: relation,
+                userid: localStorage.getItem("userid")
+              }
+              }
+            ).then(function (res) {
+              console.log('res',res)
+              _this.canClick = true;
+              if(res.data.patientName == null){
+                return Toast(res.data)
+              }
+              if(_this.confirmation == true){
+                 _this.$router.push({name:"confirmation",query:{
+                  "patientName":res.data.patientName,
+                  "id":res.data.id
+                }})
+              }else{
+                _this.$router.push("./visitMange")
+              }
+            })
+          /* } else {
+            console.log('error submit!!');
+            return false;
+          }
+        }) */
+        }
+      },
+      //返回
+      back_to(){
+        localStorage.removeItem("confirmation")
+        if(this.confirmation == true){
+          this.$router.push("./confirmation")
+        }else{
+          this.$router.push("./visitMange")
+        }
+      },
+      setDate(){
+        this.$calendar.show({
+          year:[1900,2018],  //年份的范围,如果初始化的年份不在这个范围，会自动选最小的年份
+          date:'1988-2-20',  //初始化的日期
+          onOk: (date) =>{
+            this.data = date
+          },
+          onCancel:()=>{
+            console.log('关闭')
+          }
+        });
+      },
+      show () {
+        this.info.gender = true;
+        this.info.bg = true;
+      },
+      moRen () {
+        if (this.url === require("../static/gouyuan.png")) {
+          this.url = require("../static/yuan.png")
+        }else {
+          this.url = require("../static/gouyuan.png")
+        }
+      },
+      unShow () {
+        this.info.gender = false;
+        this.info.bg = false;
+      },
+      nan () {
+        this.info.xingbie = '男';
+        this.info.gender = false;
+        this.info.bg = false;
+      },
+      nv () {
+        this.info.xingbie = '女';
+        this.info.gender = false;
+        this.info.bg = false;
+      },
+    }
+
+  }
+</script>

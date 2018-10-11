@@ -1,0 +1,16 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  // 定义状态
+  state: {
+    schlwyyUrl: 'http://www.schlwyy.com:8686', //--正式环境
+    hlwyyUrl: 'http://hlwyy.zwytest.jksczy.cn', //--测试环境
+    weChatUrl: 'http://weixin.fuwu.jkscw.com.cn', //微信服务url
+    skyUrl: 'http://192.168.1.115:8080',             //四凯测试url
+  },
+})
+
+export default store
